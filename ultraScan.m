@@ -1,15 +1,18 @@
 function [radii, angles] = ultraScan(motor,scanSpeed,samples)
 %motor.stop('Brake'); %cancels any previous movement that may be happening
-motor.ActionAtTachoLimit = 'Brake'; % Want precise movment
+%motor.ActionAtTachoLimit = 'Brake'; % Want precise movment
 motor.Power = -scanSpeed; % so it turns counterclockwise
 motor.SmoothStart = false; %we want the scan to be as linear as possible
 disp('scanning...');
 angleIt = 360/samples;
 angles = zeros(samples,1); %preallocate
 radii = zeros(samples,1); %preallocate
-for i = 0:samples-1
-    radii(i+1) = GetUltrasonic(SENSOR_4);
-    angles(i+1) = i*angleIt;
+NXT_ResetMotorPosition(2,true)
+OpenUltrasonic(SENSOR_4)
+disp(GetUltrasonic(SENSOR_4));
+for i = 1:samples
+    radii(i) = GetUltrasonic(SENSOR_4);
+    angles(i) = i*angleIt;
     motor.TachoLimit =angleIt;
     motor.SendToNXT(); %move motor
     motor.WaitFor();    
