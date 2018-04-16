@@ -9,7 +9,7 @@ angles = zeros(samples,1); %preallocate
 radii = zeros(samples,1); %preallocate
 NXT_ResetMotorPosition(2,true)
 OpenUltrasonic(SENSOR_4)
-disp(GetUltrasonic(SENSOR_4));
+pause(1)
 for i = 1:samples
     radii(i) = GetUltrasonic(SENSOR_4);
     angles(i) = i*angleIt;
