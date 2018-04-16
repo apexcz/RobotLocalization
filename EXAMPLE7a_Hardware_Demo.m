@@ -63,8 +63,9 @@ mC = NXTMotor('C', 'Power', 50, 'TachoLimit', 360);
 mC.SendToNXT();
 mC.WaitFor(); % without this the motor will barely move!
 mC.Stop('off');
-
-
+mA = NXTMotor('C')  %sensor motor connected to port A
+[sensor_scan, ~] = ultraScan(mA,50,20);
+print(sensor_scan)
 %% You can also read the current motor angle 
 data = mC.ReadFromNXT() %reads state of motor 
 
