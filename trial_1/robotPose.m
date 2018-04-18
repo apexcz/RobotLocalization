@@ -1,12 +1,14 @@
-function [botSim, guess] = robotPose(botSim,map,target)
+function [guess] = robotPose(map,target)
 %This function returns botSim and a guess, and accepts, botSim, a map and a target.
 %LOCALISE Template localisation function
 
 %% setup code
 %you can modify the map to take account of your robots configuration space
 modifiedMap = map; %you need to do this modification yourself
-botSim.setMap(modifiedMap);
+%botSim.setMap(modifiedMap);
 
+scanPower = 100;
+        
 guess = [NaN NaN NaN];
 
 %generate some random particles inside the map
@@ -18,7 +20,7 @@ turnNoise = 0.005;
 hitRange = 3; 
 scans= 20; 
 
-botSim.setScanConfig(botSim.generateScanConfig(scans));
+%botSim.setScanConfig(botSim.generateScanConfig(scans));
 
 path_div = 3;
 motionStep = 1;
@@ -45,7 +47,8 @@ n = 0;
 converged =0; %The filter has not converged yet
 while(converged == 0 && n < maxNumOfIterations) %%particle filter loop
     n = n+1; %increment the current number of iterations
-    botScan = botSim.ultraScan(); %get a scan from the real robot.
+    %botScan = botSim.ultraScan(); 
+    [botScan, ~] = ultraScan(scanPower,scans); %get a scan from the real robot.
     
     weights = zeros(num,1);
    
@@ -126,8 +129,9 @@ while(converged == 0 && n < maxNumOfIterations) %%particle filter loop
         move = hitRange*1.5;
     end
 
-    botSim.turn(turn); 
-    botSim.move(move);
+    %botSim.turn(turn); 
+    %botSim.move(move);
+    movement(turn,move);
     for i =1:num
         particles(i).turn(turn); 
         particles(i).move(move); 
@@ -150,7 +154,6 @@ while(converged == 0 && n < maxNumOfIterations) %%particle filter loop
     else
         guess = NaN; %if clusters number not small enough
     end  
-    
          
 end
 
